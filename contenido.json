@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "version": 1,
+    "actualizado": "2026-09-14"
+  },
+  "inicio": {
+    "hero": "img/hero.svg",
+    "confianza": "img/confianza.svg",
+    "tarjetas": {
+      "ventanas": "img/tarjeta-ventanas.svg",
+      "puertas": "img/tarjeta-puertas.svg",
+      "portones": "img/tarjeta-portones.svg",
+      "divisiones": "img/tarjeta-divisiones.svg"
+    }
+  },
+  "catalogo": {
+    "ventanas": {
+      "corredizas": ["img/ventanas-corredizas-1.svg"],
+      "batientes": ["img/ventanas-batientes-1.svg"]
+    },
+    "puertas": {
+      "aluminio": ["img/puertas-aluminio-1.svg"],
+      "vidrio": ["img/puertas-vidrio-1.svg"],
+      "pvc": ["img/puertas-pvc-1.svg"]
+    },
+    "portones": {
+      "instalacion": ["img/portones-instalacion-1.svg"]
+    },
+    "divisiones": {
+      "vidrio_templado": ["img/divisiones-vidrio-templado-1.svg"],
+      "acrilico": ["img/divisiones-acrilico-1.svg"]
+    }
+  },
+  "quienes_somos": {
+    "quienes_somos": "img/quienes-somos.svg",
+    "experiencia": "img/experiencia.svg",
+    "compromiso": "img/compromiso.svg"
+  },
+  "contacto": {
+    "fondo": null
+  }
+}
