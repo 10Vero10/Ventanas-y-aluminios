@@ -93,6 +93,8 @@
   var historialRehacer = [];
   var HISTORIAL_MAX = 25;
   var seccionActual = 'inicio';
+  var conexionGitHub = null;
+  try { conexionGitHub = JSON.parse(localStorage.getItem('vya_github') || 'null') || null; } catch (e) { conexionGitHub = null; }
 
   function slotNuevo(rutaOriginal) {
     return { actual: rutaOriginal || null, blob: null, vista: null };
@@ -926,33 +928,181 @@ cen.set(nombreBytes, 46);
         {
           nombre: 'contenido.json',
           datos: enc.encode(JSON.stringify(json, null, 2))
-        },
-        {
-          nombre: 'PUBLICAR-LEEME.txt',
-          datos: enc.encode(
-            'Publicación de imágenes — Ventanas y Aluminios\n' +
-            'Fecha: ' + json.meta.actualizado + '\n\n' +
-            '1. Descomprime este ZIP dentro de tu repositorio (reemplaza contenido.json y los ' +
-            'archivos que haya en img/).\n' +
-            '2. En una terminal, dentro de la carpeta del sitio ejecuta:\n' +
-            '   git add .\n' +
-            '   git commit -m "Actualización de imágenes"\n' +
-            '   git push\n' +
-            '3. En unos minutos el sitio en vivo mostrará las imágenes nuevas.\n\n' +
-            'Los archivos que ya no se usen en img/ puedes borrarlos con tranquilidad.\n'
-          )
         }
       ]);
 
+      var finalizar = function () {
+        lugarPublicado = construirRutas();
+        idbDel('borrador');
+        renderearSeccion(seccionActual);
+        actualizarEstadoPublicacion();
+      };
+
+      if (conexionGitHub) {
+        return publicarGitHub(entradas).then(function () {
+          finalizar();
+          toast('Publicado en línea. El sitio se actualiza en 1–2 minutos.');
+        }).catch(function (err) {
+          toast('No se pudo publicar en línea: ' + err.message, 'error');
+        });
+      }
+
+      entradas.push({
+        nombre: 'PUBLICAR-LEEME.txt',
+        datos: enc.encode(
+          'Publicación de imágenes — Ventanas y Aluminios\n' +
+          'Fecha: ' + json.meta.actualizado + '\n\n' +
+          '1. Descomprime este ZIP dentro de tu repositorio (reemplaza contenido.json y los ' +
+          'archivos que haya en img/).\n' +
+          '2. Haz commit y push:  git add .   git commit -m "Actualización de imágenes"   git push\n' +
+          '3. En unos minutos el sitio en vivo mostrará las imágenes nuevas.\n\n' +
+          'Los archivos que ya no se usen en img/ puedes borrarlos con tranquilidad.\n'
+        )
+      });
+
       var zip = crearZip(entradas);
       descargarBytes(zip.buffer, nombreZip, 'application/zip');
-
-      lugarPublicado = construirRutas();
-      idbDel('borrador');
-      renderearSeccion(seccionActual);
-      actualizarEstadoPublicacion();
+      finalizar();
       toast('ZIP descargado. Descomprímelo en la carpeta del sitio y haz commit (ver PUBLICAR-LEEME).');
     });
+  }
+
+  /* =========================================================
+     7b. Publicación en línea directa a GitHub (sin archivos)
+     ========================================================= */
+
+  function ghFetch(ruta, metodo, cuerpo) {
+    return fetch('https://api.github.com' + ruta, {
+      method: metodo || 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + conexionGitHub.token,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json',
+        'X-GitHub-Api-Version': '2022-11-28'
+      },
+      body: cuerpo ? JSON.stringify(cuerpo) : undefined
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (j) {
+        if (!res.ok) throw new Error((j && j.message) || ('GitHub respondió HTTP ' + res.status));
+        return j;
+      });
+    });
+  }
+
+  function bytesABase64(datos) {
+    return new Promise(function (resolver, rechazar) {
+      var fr = new FileReader();
+      fr.onload = function () { resolver(String(fr.result).split(',')[1]); };
+      fr.onerror = rechazar;
+      fr.readAsDataURL(new Blob([datos]));
+    });
+  }
+
+  function publicarGitHub(entradas) {
+    var repo = conexionGitHub.repo;
+    var rama = conexionGitHub.rama;
+    var mensaje = 'Actualización de imágenes — ' + new Date().toISOString().slice(0, 10);
+
+    return ghFetch('/repos/' + repo + '/git/ref/heads/' + rama).then(function (ref) {
+      return Promise.all(entradas.map(function (ent) {
+        return bytesABase64(ent.datos).then(function (b64) {
+          return ghFetch('/repos/' + repo + '/git/blobs', 'POST', { content: b64, encoding: 'base64' });
+        }).then(function (blob) {
+          return { path: ent.nombre, mode: '100644', type: 'blob', sha: blob.sha };
+        });
+      })).then(function (items) {
+        return ghFetch('/repos/' + repo + '/git/trees', 'POST', {
+          base_tree: ref.object.sha,
+          tree: items
+        });
+      }).then(function (arbol) {
+        return ghFetch('/repos/' + repo + '/git/commits', 'POST', {
+          message: mensaje,
+          tree: arbol.sha,
+          parents: [ref.object.sha]
+        });
+      }).then(function (commit) {
+        return ghFetch('/repos/' + repo + '/git/refs/heads/' + rama, 'PATCH', {
+          sha: commit.sha,
+          force: false
+        });
+      });
+    });
+  }
+
+  function refrescarBtnGitHub() {
+    var b = document.getElementById('btnGitHub');
+    if (!b) return;
+    b.textContent = conexionGitHub ?
+      'En línea: ' + conexionGitHub.repo :
+      'Conectar para publicar en línea';
+  }
+
+  function abrirModalGitHub() {
+    var conectado = !!conexionGitHub;
+    var repo = conexionGitHub ? conexionGitHub.repo : '10Vero10/Ventanas-y-aluminios';
+    var rama = conexionGitHub ? conexionGitHub.rama : 'main';
+    var html =
+      '<h2>' + (conectado ? 'Publicación en línea · conectada' : 'Conectar con GitHub') + '</h2>' +
+      '<p>Con esto, el botón <b>Publicar</b> sube las fotos directo al sitio web, sin guardar ningún archivo en tu equipo.</p>' +
+      '<form id="formGitHub">' +
+      '<label>Token de GitHub (Personal Access Token)' +
+      '<input type="password" id="ghToken" autocomplete="new-password" placeholder="github_pat_…"' +
+      (conectado ? '' : ' required') + '></label>' +
+      '<label>Repositorio<input type="text" id="ghRepo" value="' + repo + '"></label>' +
+      '<label>Rama<input type="text" id="ghRama" value="' + rama + '"></label>' +
+      '<div class="modal-pasos">' +
+      '<details><summary>Cómo crear el token (una sola vez)</summary>' +
+      '<ol style="padding-left:1.2rem">' +
+      '<li>En github.com: tu foto → <b>Settings</b> → <b>Developer settings</b> → <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b>.</li>' +
+      '<li>Repository access: <b>Only select repositories</b> → elige <b>' + repo + '</b>.</li>' +
+      '<li>Permissions: <b>Contents</b> → <b>Read and write</b>.</li>' +
+      '<li>Generate token y pégalo aquí. Guárdalo en un lugar seguro.</li></ol>' +
+      '</details>' +
+      '<p style="margin:.8rem 0 0">El token queda guardado solo en este navegador. Úsalo en tu equipo propio: desde la consola del navegador (F12) cualquier persona podría leerlo.</p>' +
+      '</div>' +
+      '<div class="modal__botones">' +
+      '<button class="btn btn--borde" type="button" data-cerrar>Cancelar</button>' +
+      (conectado ? '<button class="btn btn--borde" type="button" id="ghDesconectar">Desconectar</button>' : '') +
+      '<button class="panel-boton" type="submit">' + (conectado ? 'Actualizar conexión' : 'Guardar conexión') + '</button>' +
+      '</div>' +
+      '</form>';
+    var tarjeta = abrirModal(html);
+    tarjeta.querySelector('[data-cerrar]').addEventListener('click', cerrarModal);
+    if (conectado) {
+      tarjeta.querySelector('#ghDesconectar').addEventListener('click', desconectarGitHub);
+    }
+    tarjeta.querySelector('#formGitHub').addEventListener('submit', function (e) {
+      e.preventDefault();
+      guardarConexionGitHub(tarjeta);
+    });
+  }
+
+  function guardarConexionGitHub(tarjeta) {
+    var token = tarjeta.querySelector('#ghToken').value.trim();
+    var repo = tarjeta.querySelector('#ghRepo').value.trim()
+      .replace(/^https?:\/\/github\.com\//, '').replace(/\.git$/, '');
+    var rama = tarjeta.querySelector('#ghRama').value.trim() || 'main';
+    if (!token || !repo) { toast('Completa el token y el repositorio.', 'error'); return; }
+    var anterior = conexionGitHub;
+    conexionGitHub = { token: token, repo: repo, rama: rama };
+    ghFetch('/repos/' + repo).then(function () {
+      localStorage.setItem('vya_github', JSON.stringify(conexionGitHub));
+      refrescarBtnGitHub();
+      cerrarModal();
+      toast('Conectado a GitHub. Publicar sube las fotos directo al sitio.');
+    }).catch(function (err) {
+      conexionGitHub = anterior;
+      toast('No se pudo conectar: ' + err.message, 'error');
+    });
+  }
+
+  function desconectarGitHub() {
+    conexionGitHub = null;
+    localStorage.removeItem('vya_github');
+    refrescarBtnGitHub();
+    cerrarModal();
+    toast('Conexión eliminada. Sin conexión se descarga el ZIP.');
   }
 
   /* =========================================================
@@ -1108,6 +1258,8 @@ cen.set(nombreBytes, 46);
     document.getElementById('btnRehacer').addEventListener('click', rehacer);
     document.getElementById('btnBorrador').addEventListener('click', guardarBorrador);
     document.getElementById('btnPublicar').addEventListener('click', publicarCambios);
+    document.getElementById('btnGitHub').addEventListener('click', abrirModalGitHub);
+    refrescarBtnGitHub();
     document.getElementById('btnSalir').addEventListener('click', cerrarSesion);
     document.getElementById('btnClave').addEventListener('click', abrirModalCambiarClave);
     document.getElementById('btnImportar').addEventListener('click', abrirModalImportar);
