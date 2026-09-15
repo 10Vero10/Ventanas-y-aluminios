@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel administrador — Ventanas y Aluminios</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="img/hero.svg">
+  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="admin/admin.css">
+</head>
+<body class="panel-cuerpo">
+
+  <!-- ============ Acceso ============ -->
+  <section class="login-fondo" id="pantallaLogin">
+    <div class="login-tarjeta">
+      <span class="login-logo">V·A</span>
+      <h1>Panel administrador</h1>
+      <p>Ventanas y Aluminios · Imágenes del sitio</p>
+      <form id="formLogin">
+        <label for="clave">Contraseña</label>
+        <input type="password" id="clave" autocomplete="current-password" placeholder="Escribe tu contraseña" required>
+        <button class="panel-boton" type="submit">Entrar al panel</button>
+      </form>
+      <p class="login-error" id="loginError" role="alert" hidden></p>
+      <p class="login-ayuda">Primera vez: usa <b>ventanas2026</b> y luego cámbiala en el panel.</p>
+    </div>
+  </section>
+
+  <!-- ============ Aplicación ============ -->
+  <div class="panel" id="app" hidden>
+
+    <aside class="panel-lateral">
+      <div class="panel-lateral__marca">
+        <span class="marca__simbolo">V·A</span>
+        <div>
+          <b>Panel de imágenes</b>
+          <small>Ventanas y Aluminios</small>
+        </div>
+      </div>
+      <nav class="panel-nav" id="navSecciones" aria-label="Secciones del sitio">
+        <button type="button" data-seccion="inicio">Inicio</button>
+        <button type="button" data-seccion="catalogo">Catálogo</button>
+        <button type="button" data-seccion="quienes_somos">¿Quiénes somos?</button>
+        <button type="button" data-seccion="contacto">Contacto</button>
+      </nav>
+      <div class="panel-lateral__pie">
+        <button type="button" id="btnImportar">Importar contenido publicado</button>
+        <button type="button" id="btnClave">Cambiar contraseña</button>
+        <button type="button" id="btnSalir">Salir del panel</button>
+      </div>
+    </aside>
+
+    <div class="panel-principal">
+
+      <header class="panel-cabecera">
+        <div>
+          <p class="panel-miga" id="miga">Sección</p>
+          <h1 id="tituloSeccion">Imágenes · Inicio</h1>
+        </div>
+        <div class="panel-cabecera__acciones">
+          <button class="btn btn--borde" type="button" id="btnDeshacer" title="Deshacer el último cambio (Ctrl+Z)">Deshacer</button>
+          <button class="btn btn--borde" type="button" id="btnRehacer" title="Rehacer (Ctrl+Y)">Rehacer</button>
+        </div>
+      </header>
+
+      <div class="panel-items" id="avisoBorrador"></div>
+
+      <main class="panel-items" id="listaItems" aria-live="polite"></main>
+
+      <div class="panel-ahora">
+        <div class="panel-ahora__info" id="estadoPublicacion">Sin cambios sin publicar.</div>
+        <div class="panel-ahora__botones">
+          <button class="btn btn--borde" type="button" id="btnBorrador">Guardar borrador</button>
+          <button class="panel-boton" type="button" id="btnPublicar">Publicar cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-contenedor" id="contenedorToast" aria-live="polite"></div>
+  <div id="contenedorModal"></div>
+
+  <input type="file" id="entradaImagenes" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple hidden>
+  <input type="file" id="entradaImportar" webkitdirectory hidden>
+
+  <script src="js/datos.js"></script>
+  <script src="admin/seguridad.js"></script>
+  <script src="admin/admin.js"></script>
+</body>
+</html>
