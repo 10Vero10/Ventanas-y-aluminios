@@ -22,7 +22,8 @@ alimenta el sitio en vivo.
 
    (Para detener el servidor: presiona Control + C en esa terminal.)
 
-4. Escribe la contraseña: **`adminSAS`**.
+4. Escribe la contraseña del panel (la que configuró el dueño). Si la
+   olvidaste, cámbiala con el proceso del punto 2 desde este mismo navegador.
 
 > Para tu respaldo, el panel funciona del mismo modo cuando está publicado:
 > `https://tu-usuario.github.io/ventanas-y-aluminios/admin.html`.

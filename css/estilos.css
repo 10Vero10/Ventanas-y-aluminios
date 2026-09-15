@@ -829,6 +829,9 @@ a:hover > .flecha-cta span {
   place-items: center;
   padding: clamp(1rem, 4vw, 3rem);
 }
+.lightbox[hidden] {
+  display: none;
+}
 .lightbox__fondo {
   position: absolute;
   inset: 0;

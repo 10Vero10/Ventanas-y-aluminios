@@ -2,6 +2,11 @@ body {
   background: var(--paper);
 }
 
+/* El atributo hidden siempre debe ganar, aunque el estilo base sea grid/flex */
+[hidden] {
+  display: none !important;
+}
+
 /* ---------- Pantalla de acceso ---------- */
 .login-fondo {
   position: fixed;
