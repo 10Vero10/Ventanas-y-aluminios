@@ -22,7 +22,7 @@ alimenta el sitio en vivo.
 
    (Para detener el servidor: presiona Control + C en esa terminal.)
 
-4. Escribe la contraseña (por defecto: **`ventanas2026`**).
+4. Escribe la contraseña: **`adminSAS`**.
 
 > Para tu respaldo, el panel funciona del mismo modo cuando está publicado:
 > `https://tu-usuario.github.io/ventanas-y-aluminios/admin.html`.
@@ -47,9 +47,12 @@ alimenta el sitio en vivo.
   o arrastra un archivo (JPG, PNG o WEBP, máximo 3 MB).
 - La imagen se ajusta sola: recorte centrado a la proporción correcta de cada
   espacio y optimización automática (WebP o JPG).
-- **Galerías del catálogo**: cada subcategoría admite varias fotos. Añádelas
-  con el botón y **arrastra las miniaturas para reordenarlas** (el carrusel
-  muestra el orden marcado). Pulsa la X roja en una miniatura para quitarla.
+- **Galerías del catálogo**: puedes subir **todas las imágenes que quieras**
+  por subcategoría. Añádelas con el botón **Elegir archivos…** (elige varias a
+  la vez) o arrastrándolas, y **arrastra las miniaturas para reordenarlas**.
+  El sitio las muestra en una cuadrícula (4 por fila en computador) y los
+  visitantes pueden ampliar cada foto con un clic. Pulsa la X roja en una
+  miniatura para quitarla.
 - **Deshacer / Rehacer**: tienes botones y atajos (Ctrl+Z / Ctrl+Y).
 - Los cambios no se pierden si cierras el navegador: pulsa
   **Guardar borrador** y el panel te ofrecerá recuperarlo al volver.

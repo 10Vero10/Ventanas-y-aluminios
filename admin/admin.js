@@ -471,7 +471,7 @@
 
     var zona = document.createElement('div');
     zona.className = 'zona-soltar';
-    zona.innerHTML = '<p><b>Arrastra fotos aquí</b> o usa el botón.</p><p class="articulo-controles__fila" style="justify-content:center;margin-top:.7rem"><button class="btn btn--borde btn-mini" type="button">Elegir archivos…</button></p><p>JPG, PNG o WEBP · máx. 3 MB · se reencuadran a 4:3</p>';
+    zona.innerHTML = '<p><b>Arrastra fotos aquí</b> o usa el botón.</p><p class="articulo-controles__fila" style="justify-content:center;margin-top:.7rem"><button class="btn btn--borde btn-mini" type="button">Elegir archivos…</button></p><p>JPG, PNG o WEBP · máx. 3 MB por foto · puedes subir todas las que quieras · se reencuadran a 4:3</p>';
     configurarZonaSoltar(zona, item, true);
 
     var boton = $('button', zona);
@@ -632,7 +632,7 @@
     var cont = document.createElement('div');
     var nota = document.createElement('p');
     nota.className = 'articulo-nota';
-    nota.textContent = 'Consejo: arrastra las miniaturas para ordenar la galería; el número marca el orden del carrusel.';
+    nota.textContent = 'Consejo: arrastra las miniaturas para ordenar la galería. Puedes agregar todas las imágenes que quieras; cada una la publicas con un clic.';
     cont.appendChild(nota);
     return cont;
   }

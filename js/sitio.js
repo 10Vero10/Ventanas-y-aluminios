@@ -70,94 +70,159 @@
     });
   }
 
-  /* ---------- Galerías / carrusel ---------- */
-  function construirCarrusel(contenedor, rutas) {
+  /* ---------- Galerías: cuadrícula + ampliar (lightbox) ---------- */
+  var galeriasTotales = [];
+
+  function construirGaleria(contenedor, rutas, etiqueta) {
     if (!rutas || !rutas.length) rutas = ['img/hero.svg'];
     if (!Array.isArray(rutas)) rutas = [rutas];
 
-    contenedor.innerHTML = [
-      '<div class="carrusel">',
-      '  <div class="carrusel__marco">',
-      '    <div class="carrusel__pista"></div>',
-      rutas.length > 1 ? '    <button class="carrusel__flecha carrusel__flecha--prev" aria-label="Imagen anterior">&#8592;</button>' : '',
-      rutas.length > 1 ? '    <button class="carrusel__flecha carrusel__flecha--next" aria-label="Imagen siguiente">&#8594;</button>' : '',
-      '  </div>',
-      '  <div class="carrusel__pie">',
-      '    <div class="carrusel__puntos"></div>',
-      '    <span class="carrusel__contador"></span>',
-      '  </div>',
-      '</div>'
-    ].join('');
-
-    var marco = contenedor.querySelector('.carrusel__marco');
-    var pista = contenedor.querySelector('.carrusel__pista');
+    contenedor.innerHTML = '';
+    var rejilla = document.createElement('div');
+    rejilla.className = 'galeria-rejilla';
 
     rutas.forEach(function (ruta, i) {
-      var diapo = document.createElement('div');
-      diapo.className = 'carrusel__diapositiva';
+      var boton = document.createElement('button');
+      boton.type = 'button';
+      boton.className = 'galeria-item';
+      boton.setAttribute('aria-label', 'Ampliar imagen ' + (i + 1) + ' de ' + etiqueta);
+
       var img = document.createElement('img');
-      img.className = 'carrusel__img';
-      img.alt = 'Imagen ' + (i + 1);
-      img.loading = i === 0 ? 'eager' : 'lazy';
+      img.className = 'galeria-item__img';
+      img.alt = etiqueta + ' · Foto ' + (i + 1);
+      img.loading = 'lazy';
       img.addEventListener('error', function controlador() {
         img.removeEventListener('error', controlador);
         img.src = 'img/hero.svg';
       });
       img.src = ruta;
-      diapo.appendChild(img);
-      pista.appendChild(diapo);
-    });
+      boton.appendChild(img);
 
-    var indice = 0;
-    function ir(n) {
-      indice = (n + rutas.length) % rutas.length;
-      pista.style.transform = 'translateX(-' + (indice * 100) + '%)';
-      contenedor.querySelectorAll('.carrusel__punto').forEach(function (p, j) {
-        p.classList.toggle('carrusel__punto--activo', j === indice);
+      var indiceGlobal = galeriasTotales.length;
+      galeriasTotales.push({ ruta: ruta, etiqueta: etiqueta, indiceEnGaleria: i, total: rutas.length });
+
+      boton.addEventListener('click', function () {
+        abrirLightbox(indiceGlobal);
       });
-      var contador = contenedor.querySelector('.carrusel__contador');
-      var textoContador = (indice + 1) + ' / ' + rutas.length;
-      if (contador.textContent !== textoContador) contador.textContent = textoContador;
-    }
 
-    var puntos = contenedor.querySelector('.carrusel__puntos');
-    rutas.forEach(function (_, j) {
-      var punto = document.createElement('button');
-      punto.className = 'carrusel__punto';
-      punto.setAttribute('aria-label', 'Ir a la imagen ' + (j + 1));
-      punto.addEventListener('click', function () { ir(j); });
-      puntos.appendChild(punto);
+      rejilla.appendChild(boton);
     });
 
-    var prev = contenedor.querySelector('.carrusel__flecha--prev');
-    var next = contenedor.querySelector('.carrusel__flecha--next');
-    if (prev) prev.addEventListener('click', function () { ir(indice - 1); });
-    if (next) next.addEventListener('click', function () { ir(indice + 1); });
-
-    marco.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowLeft') { e.preventDefault(); ir(indice - 1); }
-      if (e.key === 'ArrowRight') { e.preventDefault(); ir(indice + 1); }
-    });
-    marco.setAttribute('tabindex', '0');
-    marco.setAttribute('role', 'region');
-    marco.setAttribute('aria-roledescription', 'carrusel');
-
-    var inicioX = null;
-    marco.addEventListener('touchstart', function (e) { inicioX = e.changedTouches[0].clientX; }, { passive: true });
-    marco.addEventListener('touchend', function (e) {
-      if (inicioX === null) return;
-      var dx = e.changedTouches[0].clientX - inicioX;
-      if (Math.abs(dx) > 40) ir(dx < 0 ? indice + 1 : indice - 1);
-      inicioX = null;
-    }, { passive: true });
-
-    ir(0);
+    contenedor.appendChild(rejilla);
   }
 
   function pintarGalerias(datos) {
+    galeriasTotales = [];
     document.querySelectorAll('[data-galeria]').forEach(function (el) {
-      construirCarrusel(el, VYA.valor(datos, el.getAttribute('data-galeria')));
+      var clave = el.getAttribute('data-galeria');
+      construirGaleria(el, VYA.valor(datos, clave), clave.split('.').pop().replace(/_/g, ' '));
     });
+    construirLightbox();
+  }
+
+  /* ---------- Lightbox (ampliar imagen) ---------- */
+  var lightbox = null;
+  var lucez = null;
+
+  function construirLightbox() {
+    if (!galeriasTotales.length) return;
+    if (document.querySelector('.lightbox')) return;
+
+    var caja = document.createElement('div');
+    caja.className = 'lightbox';
+    caja.setAttribute('role', 'dialog');
+    caja.setAttribute('aria-modal', 'true');
+    caja.setAttribute('aria-label', 'Imagen ampliada');
+    caja.hidden = true;
+
+    caja.innerHTML =
+      '<div class="lightbox__fondo"></div>' +
+      '<button class="lightbox__flecha lightbox__flecha--prev" type="button" aria-label="Imagen anterior">&#8592;</button>' +
+      '<figure class="lightbox__marco">' +
+      '  <img class="lightbox__img" alt="">' +
+      '  <figcaption class="lightbox__pie">' +
+      '    <span class="lightbox__contador"></span>' +
+      '    <span class="lightbox__etiqueta"></span>' +
+      '  </figcaption>' +
+      '</figure>' +
+      '<button class="lightbox__flecha lightbox__flecha--next" type="button" aria-label="Imagen siguiente">&#8594;</button>' +
+      '<button class="lightbox__cerrar" type="button" aria-label="Cerrar">&#10005;</button>';
+
+    document.body.appendChild(caja);
+    lightbox = caja;
+    lucez = {
+      img: caja.querySelector('.lightbox__img'),
+      contador: caja.querySelector('.lightbox__contador'),
+      etiqueta: caja.querySelector('.lightbox__etiqueta'),
+      prev: caja.querySelector('.lightbox__flecha--prev'),
+      next: caja.querySelector('.lightbox__flecha--next'),
+      cerrar: caja.querySelector('.lightbox__cerrar'),
+      fondo: caja.querySelector('.lightbox__fondo')
+    };
+
+    var indice = 0;
+    var origen = null;
+    var grupo = [];
+
+    function grupoActual() {
+      return galeriasTotales[indice] ? galeriasTotales[indice].etiqueta : null;
+    }
+
+    function primerYUltimo() {
+      var et = grupoActual();
+      var primero = -1;
+      var ultimo = -1;
+      galeriasTotales.forEach(function (g, k) {
+        if (g.etiqueta === et) {
+          if (primero === -1) primero = k;
+          ultimo = k;
+        }
+      });
+      return { primero: primero, ultimo: ultimo };
+    }
+
+    function mostrar(n) {
+      if (!galeriasTotales.length) return;
+      var total = galeriasTotales.length;
+      indice = (n + total) % total;
+      var g = galeriasTotales[indice];
+      lucez.img.src = g.ruta;
+      lucez.contador.textContent = (g.indiceEnGaleria + 1) + ' / ' + g.total;
+      lucez.etiqueta.textContent = g.etiqueta;
+      var rango = primerYUltimo();
+      lucez.prev.disabled = rango.primero === -1 || indice === rango.primero;
+      lucez.next.disabled = rango.ultimo === -1 || indice === rango.ultimo;
+    }
+
+    function abrir(n) {
+      if (!galeriasTotales.length) return;
+      origen = document.activeElement;
+      mostrar(n);
+      lightbox.hidden = false;
+      document.body.style.overflow = 'hidden';
+      lucez.cerrar.focus();
+    }
+
+    function cerrar() {
+      if (lightbox.hidden) return;
+      lightbox.hidden = true;
+      document.body.style.overflow = '';
+      if (origen && origen.focus) origen.focus();
+    }
+
+    lucez.prev.addEventListener('click', function () { mostrar(indice - 1); });
+    lucez.next.addEventListener('click', function () { mostrar(indice + 1); });
+    lucez.cerrar.addEventListener('click', cerrar);
+    lucez.fondo.addEventListener('click', cerrar);
+
+    document.addEventListener('keydown', function (e) {
+      if (lightbox.hidden) return;
+      if (e.key === 'Escape') { e.preventDefault(); cerrar(); }
+      if (e.key === 'ArrowLeft' && !lucez.prev.disabled) { e.preventDefault(); mostrar(indice - 1); }
+      if (e.key === 'ArrowRight' && !lucez.next.disabled) { e.preventDefault(); mostrar(indice + 1); }
+    });
+
+    window.abrirLightbox = abrir;
   }
 
   /* ---------- Contacto: fondo opcional ---------- */
