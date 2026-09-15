@@ -1,10 +1,6 @@
 {
-  "meta": {
-    "version": 1,
-    "actualizado": "2026-09-14"
-  },
   "inicio": {
-    "hero": "img/hero.svg",
+    "hero": "img/hero.jpg",
     "confianza": "img/confianza.svg",
     "tarjetas": {
       "ventanas": "img/tarjeta-ventanas.svg",
@@ -15,20 +11,36 @@
   },
   "catalogo": {
     "ventanas": {
-      "corredizas": ["img/ventanas-corredizas-1.svg"],
-      "batientes": ["img/ventanas-batientes-1.svg"]
+      "corredizas": [
+        "img/ventanas-corredizas-1.svg"
+      ],
+      "batientes": [
+        "img/ventanas-batientes-1.svg"
+      ]
     },
     "puertas": {
-      "aluminio": ["img/puertas-aluminio-1.svg"],
-      "vidrio": ["img/puertas-vidrio-1.svg"],
-      "pvc": ["img/puertas-pvc-1.svg"]
+      "aluminio": [
+        "img/puertas-aluminio-1.svg"
+      ],
+      "vidrio": [
+        "img/puertas-vidrio-1.svg"
+      ],
+      "pvc": [
+        "img/puertas-pvc-1.svg"
+      ]
     },
     "portones": {
-      "instalacion": ["img/portones-instalacion-1.svg"]
+      "instalacion": [
+        "img/portones-instalacion-1.svg"
+      ]
     },
     "divisiones": {
-      "vidrio_templado": ["img/divisiones-vidrio-templado-1.svg"],
-      "acrilico": ["img/divisiones-acrilico-1.svg"]
+      "vidrio_templado": [
+        "img/divisiones-vidrio-templado-1.svg"
+      ],
+      "acrilico": [
+        "img/divisiones-acrilico-1.svg"
+      ]
     }
   },
   "quienes_somos": {
@@ -38,5 +50,9 @@
   },
   "contacto": {
     "fondo": null
+  },
+  "meta": {
+    "version": 1,
+    "actualizado": "2026-09-15"
   }
 }
