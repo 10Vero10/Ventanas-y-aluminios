@@ -60,38 +60,18 @@ alimenta el sitio en vivo.
 
 ---
 
-## 4. Publicar (dos opciones)
-
-### Opción A — Publicación en línea (recomendada, sin descargar archivos)
+## 4. Publicar (en línea, sin archivos en tu equipo)
 
 1. **Una sola vez**: en el panel pulsa **Conectar para publicar en línea**.
    Sigue los pasos que se muestran para crear un *token* de GitHub
    (permiso **Contents: Read and write** sobre este repositorio) y pégalo.
 2. Desde entonces, pulsa **Publicar** y las fotos suben **directo al sitio**:
-   no se guarda ningún archivo en tu equipo.
+   no se guarda ningún archivo en tu equipo ni se descarga ningún ZIP.
 3. En 1–2 minutos el sitio en vivo muestra las fotos nuevas.
 
 > El token queda guardado solo en el navegador que uses para el panel. Como
 > cualquiera con la consola del navegador podría leerlo, úsalo solo en tu equipo.
-> Si lo revocas o lo borras, el panel vuelve a la opción B.
-
-### Opción B — ZIP clásico
-
-1. En el panel pulsa **Publicar**. Se descarga **`publicar-ventanas-aluminios.zip`**.
-2. Descomprímelo **dentro de la carpeta del sitio**, aceptando reemplazar
-   `contenido.json` y los archivos de `img/`.
-3. Sube los cambios a GitHub. Desde una terminal en la carpeta del sitio:
-
-   ```
-   git add .            →  (o en GitHub Desktop: pulsa "Commit to main" y "Push origin")
-   git commit -m "Actualización de imágenes"
-   git push
-   ```
-
-4. En pocos minutos el sitio en vivo mostrará las fotos nuevas.
-
-> El ZIP trae un **PUBLICAR-LEEME.txt** con estas mismas instrucciones.
-> Los archivos antiguos de `img/` que ya no se usen los puedes borrar con calma.
+> Si lo revocas o lo borras, el panel te avisará al publicar y ya no bajará ZIP.
 
 ---
 
@@ -111,7 +91,7 @@ GitHub, el panel puede quedarse "atrasado". Para sincronizarlo:
 ## Notas
 
 - Todo el trabajo es **local**: tus fotos en edición no se suben a ninguna
-  parte hasta que tú las publicas. La opción **A** sube directo a GitHub
-  (sin archivos en tu equipo); la **B** guarda temporalmente un ZIP.
+  parte hasta que tú las publicas. Con la conexión activada, **Publicar**
+  sube directo a GitHub sin guardar archivos en tu equipo.
 - Cambia solo imágenes; los textos y datos del sitio no se editan desde el
   panel (se ajustan directamente en `contenido.json`).

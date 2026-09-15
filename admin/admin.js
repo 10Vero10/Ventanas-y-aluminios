@@ -922,7 +922,6 @@ cen.set(nombreBytes, 46);
       });
 
       var json = construirJSONComplete();
-      var nombreZip = 'publicar-ventanas-aluminios.zip';
 
       var entradas = entradasImagenes.concat([
         {
@@ -947,23 +946,8 @@ cen.set(nombreBytes, 46);
         });
       }
 
-      entradas.push({
-        nombre: 'PUBLICAR-LEEME.txt',
-        datos: enc.encode(
-          'Publicación de imágenes — Ventanas y Aluminios\n' +
-          'Fecha: ' + json.meta.actualizado + '\n\n' +
-          '1. Descomprime este ZIP dentro de tu repositorio (reemplaza contenido.json y los ' +
-          'archivos que haya en img/).\n' +
-          '2. Haz commit y push:  git add .   git commit -m "Actualización de imágenes"   git push\n' +
-          '3. En unos minutos el sitio en vivo mostrará las imágenes nuevas.\n\n' +
-          'Los archivos que ya no se usen en img/ puedes borrarlos con tranquilidad.\n'
-        )
-      });
-
-      var zip = crearZip(entradas);
-      descargarBytes(zip.buffer, nombreZip, 'application/zip');
-      finalizar();
-      toast('ZIP descargado. Descomprímelo en la carpeta del sitio y haz commit (ver PUBLICAR-LEEME).');
+      toast('Aún no estás conectado con GitHub. Conéctalo una vez para publicar sin descargar archivos.', 'error');
+      abrirModalGitHub();
     });
   }
 
