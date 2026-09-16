@@ -27,7 +27,8 @@
         { clave: 'inicio.tarjetas.ventanas', etiqueta: 'Tarjeta · Ventanas', tipo: 'simple', proporcion: '4 : 3', ancho: 800, alto: 600, base: 'tarjeta-ventanas', nota: 'Miniatura del grid de servicios en la portada.' },
         { clave: 'inicio.tarjetas.puertas', etiqueta: 'Tarjeta · Puertas', tipo: 'simple', proporcion: '4 : 3', ancho: 800, alto: 600, base: 'tarjeta-puertas', nota: 'Miniatura del grid de servicios en la portada.' },
         { clave: 'inicio.tarjetas.portones', etiqueta: 'Tarjeta · Portones', tipo: 'simple', proporcion: '4 : 3', ancho: 800, alto: 600, base: 'tarjeta-portones', nota: 'Miniatura del grid de servicios en la portada.' },
-        { clave: 'inicio.tarjetas.divisiones', etiqueta: 'Tarjeta · Divisiones', tipo: 'simple', proporcion: '4 : 3', ancho: 800, alto: 600, base: 'tarjeta-divisiones', nota: 'Miniatura del grid de servicios en la portada.' }
+        { clave: 'inicio.tarjetas.divisiones', etiqueta: 'Tarjeta · Divisiones', tipo: 'simple', proporcion: '4 : 3', ancho: 800, alto: 600, base: 'tarjeta-divisiones', nota: 'Miniatura del grid de servicios en la portada.' },
+        { clave: 'inicio.favicon', etiqueta: 'Favicon (ícono de pestaña)', tipo: 'simple', proporcion: '1 : 1', ancho: 96, alto: 96, base: 'favicon', formato: 'image/png', nota: 'Ícono pequeño que aparece en la pestaña del navegador. Se publica como PNG.' }
       ]
     },
     {
@@ -82,6 +83,13 @@
     } catch (e) { return 'image/jpeg'; }
   })();
   var EXTENSION = FORMATO_SALIDA === 'image/webp' ? 'webp' : 'jpg';
+
+  function extensionDe(item) {
+    var f = item.formato || FORMATO_SALIDA;
+    if (f === 'image/png') return 'png';
+    if (f === 'image/webp') return 'webp';
+    return 'jpg';
+  }
 
   /* =========================================================
      2. Estado
@@ -196,8 +204,26 @@
   }
 
   /* ---------- Historial (deshacer / rehacer) ---------- */
+  function clonarEstado(objeto) {
+    if (typeof structuredClone === 'function') {
+      try { return structuredClone(objeto); } catch (e) { /* continúa con la copia manual */ }
+    }
+    return clonarManual(objeto);
+  }
+
+  function clonarManual(objeto) {
+    if (objeto instanceof Blob) return objeto;
+    if (Array.isArray(objeto)) return objeto.map(clonarManual);
+    if (objeto && typeof objeto === 'object') {
+      var copia = {};
+      Object.keys(objeto).forEach(function (k) { copia[k] = clonarManual(objeto[k]); });
+      return copia;
+    }
+    return objeto;
+  }
+
   function registrarHistorial() {
-    historialDeshacer.push(structuredClone(estado));
+    historialDeshacer.push(clonarEstado(estado));
     if (historialDeshacer.length > HISTORIAL_MAX) historialDeshacer.shift();
     historialRehacer.length = 0;
     actualizarBotonesHistorial();
@@ -205,7 +231,7 @@
 
   function deshacer() {
     if (!historialDeshacer.length) return;
-    historialRehacer.push(structuredClone(estado));
+    historialRehacer.push(clonarEstado(estado));
     estado = historialDeshacer.pop();
     renderearTodo();
     actualizarBotonesHistorial();
@@ -214,7 +240,7 @@
 
   function rehacer() {
     if (!historialRehacer.length) return;
-    historialDeshacer.push(structuredClone(estado));
+    historialDeshacer.push(clonarEstado(estado));
     estado = historialRehacer.pop();
     renderearTodo();
     actualizarBotonesHistorial();
@@ -341,7 +367,7 @@
           URL.revokeObjectURL(urlObj);
           if (!blob) return rej(new Error('No se pudo procesar la imagen'));
           res(blob);
-        }, FORMATO_SALIDA, 0.85);
+        }, item.formato || FORMATO_SALIDA, item.formato === 'image/png' ? undefined : 0.85);
       };
       img.onerror = function () { URL.revokeObjectURL(urlObj); rej(new Error('Archivo de imagen no válido')); };
       img.src = urlObj;
@@ -621,7 +647,7 @@
     var nota = document.createElement('p');
     nota.className = 'articulo-nota';
     nota.textContent = slot.blob
-      ? 'Nueva imagen lista. Se publicará como img/' + item.base + '.' + EXTENSION
+      ? 'Nueva imagen lista. Se publicará como img/' + item.base + '.' + extensionDe(item)
       : 'En uso: ' + (slot.actual || 'ninguna imagen');
 
     cont.appendChild(zona);
@@ -714,7 +740,7 @@
   }
 
   function guardarBorrador() {
-    idbSet('borrador', structuredClone(estado)).then(function () {
+    idbSet('borrador', clonarEstado(estado)).then(function () {
       toast('Borrador guardado en este navegador.');
     }).catch(function () {
       toast('No se pudo guardar el borrador.', 'error');
@@ -885,10 +911,10 @@ cen.set(nombreBytes, 46);
           if (item.tipo === 'galeria') {
             do {
               seq++;
-              ruta = 'img/' + item.base + '-' + seq + '.' + EXTENSION;
+              ruta = 'img/' + item.base + '-' + seq + '.' + extensionDe(item);
             } while (usadas.has(ruta));
           } else {
-            ruta = 'img/' + item.base + '.' + EXTENSION;
+            ruta = 'img/' + item.base + '.' + extensionDe(item);
           }
           usadas.add(ruta);
           blobsPorRuta[ruta] = slot.blob;
