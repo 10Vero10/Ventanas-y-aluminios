@@ -18,8 +18,6 @@
   <rect width="1200" height="900" fill="url(#halo)"/>
   <circle cx="600" cy="450" r="450" fill="none" stroke="#39414f" stroke-width="2"/>
   <circle cx="600" cy="450" r="387" fill="none" stroke="#313948" stroke-width="1"/>
-  <rect x="575" y="425" width="50" height="50" fill="#f2a33c"/>
-  <text x="600" y="405" text-anchor="middle" fill="#e8ebee" font-family="Archivo, Arial, sans-serif" font-weight="800" font-size="50" letter-spacing="4">V·A</text>
   <text x="600" y="513" text-anchor="middle" fill="#aab2bd" font-family="Archivo, Arial, sans-serif" font-weight="600" font-size="25" letter-spacing="7">PUERTAS · ALUMINIO</text>
   <text x="600" y="594" text-anchor="middle" fill="#6c7480" font-family="Space Mono, monospace" font-size="18">coloca tu foto aquí</text>
   <text x="600" y="875" text-anchor="middle" fill="#f2a33c" font-family="Space Mono, monospace" font-size="22" letter-spacing="2">VENTANAS Y ALUMINIOS</text>
