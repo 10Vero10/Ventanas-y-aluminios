@@ -241,7 +241,13 @@ a:hover > .flecha-cta span {
   font-size: 0.95rem;
   border-radius: var(--r-sm);
   letter-spacing: -0.02em;
+  overflow: hidden;
 }
+.marca__simbolo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}​
 .marca__texto {
   display: flex;
   flex-direction: column;
