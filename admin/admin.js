@@ -73,7 +73,7 @@
       miga: 'Configuración',
       descripcion: 'Opciones generales del sitio. Se publican junto con las imágenes presionando "Publicar cambios".',
       items: [
-        { clave: 'config.cotizar', etiqueta: 'Botón "Cotizar"', tipo: 'interruptor', nota: 'Muestra u oculta el botón "Cotizar" de la cabecera, la portada y las secciones de cierre de todas las páginas. La página de Contacto no cambia.' }
+        { clave: 'config.cotizar', etiqueta: 'Botón "Cotizar" y sección Contacto', tipo: 'interruptor', nota: 'Muestra u oculta el botón "Cotizar" y el enlace a la sección Contacto en todas las páginas. Ocultando se evita dirigir a cotización por WhatsApp.' }
       ]
     }
   ];
