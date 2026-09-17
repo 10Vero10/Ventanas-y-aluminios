@@ -7,7 +7,8 @@
       "puertas": "img/tarjeta-puertas.svg",
       "portones": "img/tarjeta-portones.svg",
       "divisiones": "img/tarjeta-divisiones.svg"
-    }
+    },
+    "favicon": null
   },
   "catalogo": {
     "ventanas": {
@@ -52,10 +53,10 @@
     "fondo": null
   },
   "config": {
-    "cotizar": true
+    "cotizar": false
   },
   "meta": {
     "version": 1,
-    "actualizado": "2026-09-15"
+    "actualizado": "2026-09-16"
   }
 }
