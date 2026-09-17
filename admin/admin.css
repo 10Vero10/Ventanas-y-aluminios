@@ -274,6 +274,9 @@ body {
 .articulo-cuerpo--galeria {
   grid-template-columns: 1fr;
 }
+.articulo-cuerpo--interruptor {
+  grid-template-columns: 1fr;
+}
 @media (max-width: 980px) {
   .panel {
     grid-template-columns: 1fr;
@@ -390,6 +393,68 @@ body {
   display: flex;
   align-items: center;
   gap: 0.45rem;
+}
+
+/* ---------- Interruptor (Configuración) ---------- */
+.interruptor-fila {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  min-height: 100px;
+}
+.interruptor-fila__texto b {
+  display: block;
+  font-size: 1rem;
+}
+.interruptor-fila__texto p {
+  margin: 0.3rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  max-width: 52ch;
+}
+.interruptor {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.interruptor input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.interruptor__carril {
+  position: relative;
+  width: 52px;
+  height: 30px;
+  border-radius: var(--pill);
+  background: #d4d8db;
+  transition: background 0.18s;
+}
+.interruptor__carril::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.interruptor input:checked + .interruptor__carril {
+  background: var(--accent-deep);
+}
+.interruptor input:checked + .interruptor__carril::after {
+  transform: translateX(22px);
+}
+.interruptor input:focus-visible + .interruptor__carril {
+  box-shadow: 0 0 0 3px rgba(242, 163, 60, 0.35);
 }
 
 /* ---------- Galería ---------- */

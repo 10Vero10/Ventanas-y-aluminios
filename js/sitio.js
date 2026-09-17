@@ -232,6 +232,15 @@
     });
   }
 
+  /* ---------- Configuración: mostrar u ocultar "Cotizar" ---------- */
+  function pintarOpciones(datos) {
+    var cotizar = VYA.valor(datos, 'config.cotizar') !== false;
+    document.querySelectorAll('[data-cotizar]').forEach(function (el) {
+      el.hidden = !cotizar;
+      el.style.display = cotizar ? '' : 'none';
+    });
+  }
+
   /* ---------- Enlace activo ---------- */
   function enlaceActivo() {
     var ruta = location.pathname.split('/').pop() || 'index.html';
@@ -249,6 +258,7 @@
       pintarImagenes(datos);
       pintarGalerias(datos);
       pintarFondoContacto(datos);
+      pintarOpciones(datos);
     }).catch(function (err) {
       console.error(err);
       document.querySelectorAll('[data-img]').forEach(function (el) {

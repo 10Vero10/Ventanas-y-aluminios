@@ -51,6 +51,9 @@
   "contacto": {
     "fondo": null
   },
+  "config": {
+    "cotizar": true
+  },
   "meta": {
     "version": 1,
     "actualizado": "2026-09-15"

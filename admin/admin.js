@@ -66,6 +66,15 @@
       items: [
         { clave: 'contacto.fondo', etiqueta: 'Fondo de contacto (opcional)', tipo: 'simple', proporcion: '4 : 3', ancho: 1600, alto: 900, base: 'contacto-fondo', nota: 'Fondo sutil de la sección de contacto. Puedes eliminarla para mantener el diseño minimalista.', opcional: true }
       ]
+    },
+    {
+      id: 'config',
+      titulo: 'Configuración del sitio',
+      miga: 'Configuración',
+      descripcion: 'Opciones generales del sitio. Se publican junto con las imágenes presionando "Publicar cambios".',
+      items: [
+        { clave: 'config.cotizar', etiqueta: 'Botón "Cotizar"', tipo: 'interruptor', nota: 'Muestra u oculta el botón "Cotizar" de la cabecera, la portada y las secciones de cierre de todas las páginas. La página de Contacto no cambia.' }
+      ]
     }
   ];
 
@@ -132,6 +141,10 @@
     var e = {};
     SECCIONES.forEach(function (sec) {
       sec.items.forEach(function (item) {
+        if (item.tipo === 'interruptor') {
+          posicionar(e, item.clave, VYA.valor(datos, item.clave) !== false);
+          return;
+        }
         var valor = VYA.valor(datos, item.clave);
         var slots;
         if (item.tipo === 'galeria') {
@@ -155,6 +168,10 @@
     SECCIONES.forEach(function (sec) {
       out[sec.id] = {};
       sec.items.forEach(function (item) {
+        if (item.tipo === 'interruptor') {
+          posicionar(out, item.clave, obtener(estado, item.clave) !== false);
+          return;
+        }
         var slots = obtener(estado, item.clave);
         var valor;
         if (Array.isArray(slots)) {
@@ -188,16 +205,32 @@
     return !!slot && !!slot.blob;
   }
 
+  function valorPublicadoActivo(clave) {
+    return VYA.valor(lugarPublicado, clave) !== false;
+  }
+
   function contarCambios() {
     var n = 0;
     SECCIONES.forEach(function (sec) {
       sec.items.forEach(function (item) {
+        if (item.tipo === 'interruptor') return;
         var slots = obtener(estado, item.clave);
         if (Array.isArray(slots)) {
           slots.forEach(function (s) { if (slotTieneCambios(s)) n++; });
         } else if (slotTieneCambios(slots)) {
           n++;
         }
+      });
+    });
+    return n;
+  }
+
+  function contarCambiosConfig() {
+    var n = 0;
+    SECCIONES.forEach(function (sec) {
+      sec.items.forEach(function (item) {
+        if (item.tipo !== 'interruptor') return;
+        if ((obtener(estado, item.clave) !== false) !== valorPublicadoActivo(item.clave)) n++;
       });
     });
     return n;
@@ -415,6 +448,8 @@
   }
 
   function construirArticulo(item, seccionId) {
+    if (item.tipo === 'interruptor') return construirInterruptor(item);
+
     var art = document.createElement('article');
     art.className = 'articulo';
     art.dataset.clave = item.clave;
@@ -455,6 +490,79 @@
       cuerpo.appendChild(construirVistaSimple(item, slots));
       cuerpo.appendChild(construirControlesSimple(item, slots));
     }
+    art.appendChild(cuerpo);
+    return art;
+  }
+
+  function construirInterruptor(item) {
+    var art = document.createElement('article');
+    art.className = 'articulo';
+    art.dataset.clave = item.clave;
+
+    var activo = obtener(estado, item.clave) !== false;
+
+    /* Cabecera */
+    var cab = document.createElement('div');
+    cab.className = 'articulo-cabecera';
+    var cabTxt = document.createElement('div');
+    var h2 = document.createElement('h2');
+    h2.textContent = item.etiqueta;
+    var nota = document.createElement('p');
+    nota.textContent = item.nota || '';
+    cabTxt.appendChild(h2);
+    cabTxt.appendChild(nota);
+
+    var chip = document.createElement('span');
+    chip.className = 'articulo-chip' + (activo ? ' articulo-chip--nuevo' : '');
+    chip.textContent = activo ? 'Visible' : 'Oculto';
+    cab.appendChild(cabTxt);
+    cab.appendChild(chip);
+    art.appendChild(cab);
+
+    /* Cuerpo */
+    var cuerpo = document.createElement('div');
+    cuerpo.className = 'articulo-cuerpo articulo-cuerpo--interruptor';
+
+    var cont = document.createElement('div');
+    cont.className = 'articulo-controles';
+
+    var fila = document.createElement('div');
+    fila.className = 'interruptor-fila';
+
+    var control = document.createElement('label');
+    control.className = 'interruptor';
+    var chk = document.createElement('input');
+    chk.type = 'checkbox';
+    chk.checked = activo;
+    var carril = document.createElement('span');
+    carril.className = 'interruptor__carril';
+    control.appendChild(chk);
+    control.appendChild(carril);
+
+    var texto = document.createElement('div');
+    texto.className = 'interruptor-fila__texto';
+    var titulo = document.createElement('b');
+    titulo.textContent = activo ? 'Botón visible en el sitio' : 'Botón oculto en el sitio';
+    var desc = document.createElement('p');
+    desc.textContent = activo
+      ? 'El botón "Cotizar" se muestra en la cabecera, la portada y las secciones de cierre. Publícalo para aplicarlo.'
+      : 'El botón "Cotizar" queda oculto en todo el sitio. Publícalo para aplicarlo.';
+    texto.appendChild(titulo);
+    texto.appendChild(desc);
+
+    fila.appendChild(control);
+    fila.appendChild(texto);
+
+    chk.addEventListener('change', function () {
+      registrarHistorial();
+      posicionar(estado, item.clave, chk.checked);
+      renderearSeccion(seccionActual);
+      actualizarEstadoPublicacion();
+      toast(chk.checked ? 'El botón "Cotizar" se mostrará.' : 'El botón "Cotizar" quedará oculto.');
+    });
+
+    cont.appendChild(fila);
+    cuerpo.appendChild(cont);
     art.appendChild(cuerpo);
     return art;
   }
@@ -729,11 +837,14 @@
   function actualizarEstadoPublicacion() {
     var barra = document.getElementById('estadoPublicacion');
     var cambios = contarCambios();
+    var cambiosConfig = contarCambiosConfig();
     var igual = JSON.stringify(construirRutas()) === JSON.stringify(lugarPublicado);
-    if (igual && cambios === 0) {
+    if (igual && cambios === 0 && cambiosConfig === 0) {
       barra.innerHTML = 'Todo publicado. Sin cambios pendientes.';
     } else if (igual) {
       barra.innerHTML = '<b>' + cambios + '</b> imagen(es) nueva(s) guardada(s) en el borrador.';
+    } else if (cambios === 0) {
+      barra.innerHTML = 'Cambios de configuración sin publicar.';
     } else {
       barra.innerHTML = '<b>' + cambios + '</b> imagen(es) nueva(s) y/o el orden cambió. Publica para exportar el ZIP.';
     }
@@ -900,6 +1011,7 @@ cen.set(nombreBytes, 46);
 
     SECCIONES.forEach(function (sec) {
       sec.items.forEach(function (item) {
+        if (item.tipo === 'interruptor') return;
         var slots = obtener(estado, item.clave);
         var lista = Array.isArray(slots) ? slots : [slots];
         var usadas = new Set(lista.map(function (s) { return s.actual; }).filter(Boolean));
@@ -935,6 +1047,7 @@ cen.set(nombreBytes, 46);
       /* 3. Marcar los slots como publicados (la vista previa se conserva) */
       SECCIONES.forEach(function (sec) {
         sec.items.forEach(function (item) {
+          if (item.tipo === 'interruptor') return;
           var slots = obtener(estado, item.clave);
           var lista = Array.isArray(slots) ? slots : [slots];
           lista.forEach(function (slot) {
@@ -1011,7 +1124,7 @@ cen.set(nombreBytes, 46);
   function publicarGitHub(entradas) {
     var repo = conexionGitHub.repo;
     var rama = conexionGitHub.rama;
-    var mensaje = 'Actualización de imágenes — ' + new Date().toISOString().slice(0, 10);
+    var mensaje = 'Actualización del sitio — ' + new Date().toISOString().slice(0, 10);
 
     return ghFetch('/repos/' + repo + '/git/ref/heads/' + rama).then(function (ref) {
       return Promise.all(entradas.map(function (ent) {
