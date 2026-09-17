@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ventanas y Aluminios — Fabricación e instalación a medida</title>
-  <meta name="description" content="Fabricamos e instalamos ventanas, puertas, portones y divisiones en aluminio y vidrio. Más de 25 años de experiencia.">
+  <meta name="description" content="Cotizador en línea con plano esquemático interactivo. Ventanas, puertas, portones y divisiones en aluminio y vidrio, fabricados e instalados con más de 25 años de experiencia.">
   <link rel="icon" type="image/png" href="img/favicon.png">
-  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="css/estilos.css?v=5">
+  <link rel="stylesheet" href="css/cotizador.css?v=5">
 </head>
 <body>
 
@@ -46,50 +47,99 @@
   </nav>
 
   <main>
-    <section class="hero" id="inicio">
-      <div class="hero__media">
-        <img class="hero__img" data-img="inicio.hero" alt="Portada: fabricación e instalación de ventanas y aluminio" fetchpriority="high">
-        <div class="hero__velo"></div>
-      </div>
-      <div class="contenedor">
-        <div class="hero__contenido">
-          <p class="etiqueta etiqueta--claro animar-entrada">Fábrica · Instalación · A medida</p>
-          <h1 class="hero__titulo animar-entrada" style="animation-delay:.08s">Aluminio y vidrio <em>a la medida</em> del proyecto</h1>
-          <p class="hero__bajada animar-entrada" style="animation-delay:.16s">Fabricamos e instalamos ventanas, puertas, portones y divisiones, con más de 25 años de experiencia y acabados de excelencia.</p>
-          <div class="hero__ctas animar-entrada" style="animation-delay:.24s">
-            <a class="btn btn--principal" href="catalogo.html">Ver catálogo</a>
-            <a class="btn btn--borde-claro" href="contacto.html" data-cotizar>Cotizar</a>
+    <!-- ============ Hero con cotizador integrado ============ -->
+    <section class="hero-cotiza" id="inicio">
+      <div class="contenedor hero-cotiza__rejilla">
+        <div class="hero-cotiza__texto reveal">
+          <p class="etiqueta">Fábrica · Instalación · A medida</p>
+          <h1 class="hero-cotiza__titulo">Aluminio y vidrio <em>a la medida</em> del proyecto</h1>
+          <p class="hero-cotiza__bajada">Cotiza en 30 segundos con nuestro plano esquemático interactivo: elige medidas y acabados y mira exactamente lo que vas a pagar, con precio final a WhatsApp.</p>
+
+          <div class="hero-cotiza__metricas">
+            <div class="metrica-circulo">
+              <span class="metrica-circulo__num">+15</span>
+              <span class="metrica-circulo__rotulo">años</span>
+              <span class="metrica-circulo__sub">de experiencia</span>
+            </div>
+            <div class="metrica-circulo">
+              <span class="metrica-circulo__num">+1.200</span>
+              <span class="metrica-circulo__rotulo">obras</span>
+              <span class="metrica-circulo__sub">entregadas</span>
+            </div>
+            <div class="metrica-circulo">
+              <span class="metrica-circulo__num">100%</span>
+              <span class="metrica-circulo__rotulo">garantía</span>
+              <span class="metrica-circulo__sub">de instalación</span>
+            </div>
+          </div>
+
+          <a class="btn btn--principal" href="#cotizador" data-cotizar>Cotizar ahora</a>
+        </div>
+
+        <div class="hero-cotiza__plano reveal reveal--delay" aria-hidden="true">
+          <div class="plano-esquematico" data-plano-marcos="3">
+            <span class="plano-esquematico__vineta">Plano esquemático en vivo</span>
+            <svg class="plano-esquematico__svg" viewBox="0 0 420 300" role="img" aria-label="Plano esquemático dinámico del cotizador">
+              <defs>
+                <linearGradient id="rejas" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#fff" stop-opacity=".38"/>
+                  <stop offset="1" stop-color="#fff" stop-opacity=".06"/>
+                </linearGradient>
+                <pattern id="reticula" width="16" height="16" patternUnits="userSpaceOnUse">
+                  <path d="M16 0H0v16" fill="none" stroke="#cfe0ff" stroke-width=".5" stroke-opacity=".3"/>
+                </pattern>
+              </defs>
+              <rect x="0" y="0" width="420" height="300" fill="url(#reticula)"/>
+              <g class="plano-esquematico__paredes">
+                <rect class="linea-plano" x="34" y="34" width="352" height="232" rx="6" fill="none" stroke="#dfe8ff" stroke-width="18" stroke-opacity=".55"/>
+              </g>
+              <g data-plano-ventana>
+                <rect class="alma-plano" x="220" y="120" width="120" height="90" rx="4" fill="#fff" stroke="#2b5bd7" stroke-width="8"/>
+                <path class="virotes" d="M280 120v90M220 165h120" stroke="#2b5bd7" stroke-width="4" opacity=".75"/>
+              </g>
+              <circle cx="60" cy="70" r="7" fill="#f2a33c"/>
+              <text x="60" y="102" text-anchor="middle" fill="#a8802f" font-size="11" font-family="var(--mono)">Marco</text>
+              <circle cx="348" cy="70" r="7" fill="#f2a33c"/>
+              <text x="348" y="102" text-anchor="middle" fill="#a8802f" font-size="11" font-family="var(--mono)">Vidrio</text>
+              <g class="plano-esquematico__cotas">
+                <line x1="220" y1="248" x2="340" y2="248" stroke="#2b5bd7" stroke-width="2"/>
+                <polygon points="220,248 231,242 231,254" fill="#2b5bd7"/>
+                <polygon points="340,248 329,242 329,254" fill="#2b5bd7"/>
+                <text x="280" y="266" text-anchor="middle" fill="#1e2b5c" font-size="12" font-weight="700" font-family="var(--mono)"><tspan>Ancho</tspan> <tspan data-plano-ancho>0,00 m</tspan></text>
+              </g>
+            </svg>
+            <span class="plano-esquematico__pie">Se dibuja según tus medidas · desde $<span data-precio-ia></span>/m²</span>
           </div>
         </div>
       </div>
-      <p class="hero__pista">Desliza para conocer más</p>
+      <p class="hero-cotiza__pista">Desliza para conocer el cotizador →</p>
     </section>
 
-    <section class="franja">
-      <div class="franja__rejilla">
-        <div class="franja__media reveal">
-          <img class="franja__img" data-img="inicio.confianza" alt="Nuestro taller y trayectoria de 25 años">
-        </div>
-        <div class="franja__cuerpo reveal">
-          <p class="etiqueta etiqueta--claro">Nuestra trayectoria</p>
-          <div class="franja__numero">
-            <b>25</b>
-            <span>años fabricando confianza</span>
-          </div>
-          <p class="franja__texto">Desde cada taller hasta el control final de calidad, cuidamos cada detalle en la fabricación y la instalación de tus ventanas, puertas, portones y divisiones.</p>
-          <div class="hero__ctas" style="margin-top:1.8rem">
-            <a class="btn btn--claro" href="quienes-somos.html">Conócenos</a>
+    <!-- ============ Franja confianza ============ -->
+    <section class="franja-confianza">
+      <div class="contenedor franja-confianza__interior">
+        <div class="franja-confianza__caja reveal">
+          <img class="franja-confianza__img" data-img="inicio.confianza" alt="Nuestro taller y trayectoria de 25 años">
+          <div class="franja-confianza__texto">
+            <p class="etiqueta etiqueta--claro">Nuestra trayectoria</p>
+            <div class="franja-confianza__numero">
+              <b>25</b>
+              <span>años fabricando confianza</span>
+            </div>
+            <p class="franja-confianza__detalle">Desde cada taller hasta el control final de calidad, cuidamos cada detalle de la fabricación e instalación de tus ventanas, puertas, portones y divisiones.</p>
+            <a class="btn btn--claro" href="quienes-somos.html" data-cotizar>Conócenos</a>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ============ Catálogo corto con tarjetas ============ -->
     <section class="espacio-seccion">
       <div class="contenedor">
         <div class="seccion-titulo reveal">
-          <h2>Lo que <em>fabricamos</em></h2>
+          <h2>Nuestros <em>sistemas</em></h2>
           <div class="seccion-titulo__info">
-            <p>Cuatro líneas de trabajo y una sola obsesión: medidas exactas, instalación limpia y acabados que duren.</p>
+            <p>Elegí un sistema y presupuestá en minutos. Cada cotización se basa en tus medidas reales.</p>
           </div>
         </div>
 
@@ -102,7 +152,7 @@
             <div class="tarjeta-servicio__cuerpo">
               <h3>Ventanas</h3>
               <p>Corredizas y batientes en aluminio, con vidrio sencillo, doble o templado.</p>
-              <a class="tarjeta-servicio__link" href="catalogo.html#ventanas">
+              <a class="tarjeta-servicio__link" href="catalogo.html#ventanas" data-cotizar>
                 Ver productos <span class="flecha-cta">→</span>
               </a>
             </div>
@@ -116,7 +166,7 @@
             <div class="tarjeta-servicio__cuerpo">
               <h3>Puertas</h3>
               <p>De aluminio, vidrio y PVC, para interiores, exteriores y proyectos comerciales.</p>
-              <a class="tarjeta-servicio__link" href="catalogo.html#puertas">
+              <a class="tarjeta-servicio__link" href="catalogo.html#puertas" data-cotizar>
                 Ver productos <span class="flecha-cta">→</span>
               </a>
             </div>
@@ -130,7 +180,7 @@
             <div class="tarjeta-servicio__cuerpo">
               <h3>Portones</h3>
               <p>Instalación de portones tipo americano, robustos y de operación confiable.</p>
-              <a class="tarjeta-servicio__link" href="catalogo.html#portones">
+              <a class="tarjeta-servicio__link" href="catalogo.html#portones" data-cotizar>
                 Ver productos <span class="flecha-cta">→</span>
               </a>
             </div>
@@ -144,7 +194,7 @@
             <div class="tarjeta-servicio__cuerpo">
               <h3>Divisiones</h3>
               <p>En vidrio templado y acrílico para baños y oficinas, fabricadas a la medida exacta.</p>
-              <a class="tarjeta-servicio__link" href="catalogo.html#divisiones">
+              <a class="tarjeta-servicio__link" href="catalogo.html#divisiones" data-cotizar>
                 Ver productos <span class="flecha-cta">→</span>
               </a>
             </div>
@@ -153,6 +203,197 @@
       </div>
     </section>
 
+    <!-- ============ COTIZADOR · 3 pasos + plano dinámico ============ -->
+    <section class="cotizador" id="cotizador">
+      <div class="contenedor">
+        <div class="seccion-titulo seccion-titulo--claro reveal">
+          <h2>Cotizá <em>en vivo</em></h2>
+          <div class="seccion-titulo__info">
+            <p>El plano de la derecha se redibuja con cada cambio. Terminá y enviá el pedido a WhatsApp, o descargalo en PDF.</p>
+          </div>
+        </div>
+
+        <div class="cotizador-rejilla">
+          <!-- Columna formulario -->
+          <form class="cotizador-formulario" id="formCotizador" novalidate>
+            <div class="pasos-cabecera" role="tablist" aria-label="Pasos del cotizador">
+              <button class="paso-chip is-activo" type="button" role="tab" data-paso-tab="1">1 · Medidas</button>
+              <button class="paso-chip" type="button" role="tab" data-paso-tab="2" disabled>2 · Acabados</button>
+              <button class="paso-chip" type="button" role="tab" data-paso-tab="3" disabled>3 · Resumen</button>
+            </div>
+
+            <!-- Paso 1: medidas -->
+            <fieldset class="paso is-activo" data-paso="1">
+              <legend class="paso-leyenda">Paso 1 · Elige el producto y las medidas</legend>
+
+              <div class="campo-campo">
+                <label class="campo-etiqueta" for="cqProducto">Producto</label>
+                <select id="cqProducto" data-cq-producto>
+                  <option value="ventanas" data-precio="config.cotizador.base.ventanas">Ventanas</option>
+                  <option value="puertas" data-precio="config.cotizador.base.puertas">Puertas</option>
+                  <option value="portones" data-precio="config.cotizador.base.portones">Portones</option>
+                  <option value="divisiones" data-precio="config.cotizador.base.divisiones">Divisiones</option>
+                  <option value="baranda" data-precio="config.cotizador.base.baranda">Barandas</option>
+                </select>
+              </div>
+
+              <div class="campo-rejilla">
+                <div class="campo-campo">
+                  <label class="campo-etiqueta">Ancho</label>
+                  <input class="campo-rango" type="range" data-cq-parte="ancho" min="50" max="600" step="10" value="150">
+                  <div class="campo-rango__fila">
+                    <span data-cq-valor="ancho">1,50</span><span>m</span>
+                  </div>
+                </div>
+                <div class="campo-campo">
+                  <label class="campo-etiqueta">Alto</label>
+                  <input class="campo-rango" type="range" data-cq-parte="alto" min="50" max="300" step="10" value="150">
+                  <div class="campo-rango__fila">
+                    <span data-cq-valor="alto">1,50</span><span>m</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="campo-campo">
+                <label class="campo-etiqueta">Cantidad</label>
+                <div class="campo-stepper">
+                  <button class="btn-stepper" type="button" data-cq-menos aria-label="Restar unidad">−</button>
+                  <output data-cq-cantidad>1</output>
+                  <button class="btn-stepper" type="button" data-cq-mas aria-label="Sumar unidad">+</button>
+                </div>
+              </div>
+
+              <div class="paso-acciones">
+                <span class="paso-pista">Paso 1 de 3</span>
+                <button class="btn btn--principal" type="button" data-cq-siguiente>Continuar →</button>
+              </div>
+            </fieldset>
+
+            <!-- Paso 2: acabados y cristales -->
+            <fieldset class="paso" data-paso="2" hidden>
+              <legend class="paso-leyenda">Paso 2 · Acabado y cristal</legend>
+
+              <div class="campo-campo">
+                <span class="campo-etiqueta">Acabado</span>
+                <div class="selector-opciones" data-cq-opciones="acabados">
+                  <label class="opcion"><input type="radio" name="cqAcabado" value="mate_negro" checked><span>Mate Negro</span></label>
+                  <label class="opcion"><input type="radio" name="cqAcabado" value="blanco"><span>Blanco Esmaltado</span></label>
+                  <label class="opcion"><input type="radio" name="cqAcabado" value="anodizado"><span>Anodizado Natural</span></label>
+                  <label class="opcion"><input type="radio" name="cqAcabado" value="chocolate"><span>Chocolate</span></label>
+                  <label class="opcion"><input type="radio" name="cqAcabado" value="madera"><span>Madera Roble</span></label>
+                </div>
+              </div>
+
+              <div class="campo-campo">
+                <span class="campo-etiqueta">Cristal</span>
+                <div class="selector-opciones" data-cq-opciones="cristales">
+                  <label class="opcion"><input type="radio" name="cqCristal" value="claro" checked><span>Claro Templable 6 mm</span></label>
+                  <label class="opcion"><input type="radio" name="cqCristal" value="filtrasol"><span>Filtrasol 6 mm</span></label>
+                  <label class="opcion"><input type="radio" name="cqCristal" value="duovent"><span>DúoVent 6+12+6</span></label>
+                  <label class="opcion"><input type="radio" name="cqCristal" value="templado"><span>Templado 9.5 mm</span></label>
+                </div>
+              </div>
+
+              <div class="campo-rejilla">
+                <label class="opcion-fila"><input type="checkbox" data-cq-menaje="instalacion"><span>Incluir instalación</span></label>
+                <label class="opcion-fila"><input type="checkbox" data-cq-menaje="mosquitero"><span>Incluir mosquitero</span></label>
+              </div>
+
+              <div class="paso-acciones paso-acciones--repartido">
+                <button class="btn btn--borde" type="button" data-cq-atras>← Volver</button>
+                <button class="btn btn--principal" type="button" data-cq-paso3>Ver resumen →</button>
+              </div>
+            </fieldset>
+
+            <!-- Paso 3: resumen -->
+            <fieldset class="paso" data-paso="3" hidden>
+              <legend class="paso-leyenda">Paso 3 · Resumen y envío</legend>
+
+              <div class="resumen-linea"><span>Producto</span><b data-rs-producto></b></div>
+              <div class="resumen-linea"><span>Medidas</span><b><span data-rs-ancho></span> × <span data-rs-alto></span> m · × <span data-rs-cantidad></span></b></div>
+              <div class="resumen-linea"><span>Acabado</span><b data-rs-acabado></b></div>
+              <div class="resumen-linea"><span>Cristal</span><b data-rs-cristal></b></div>
+              <div class="resumen-linea"><span>Instalación</span><b data-rs-instalacion></b></div>
+              <div class="resumen-linea"><span>Mosquitero</span><b data-rs-mosquitero></b></div>
+              <div class="resumen-total"><span>Total estimado</span><b data-rs-total></b></div>
+
+              <div class="paso-acciones paso-acciones--repartido">
+                <button class="btn btn--borde" type="button" data-cq-atras2>← Volver</button>
+                <a class="btn btn--principal" href="#" data-cq-whatsapp target="_blank" rel="noopener">Enviar a WhatsApp</a>
+              </div>
+              <button class="btn btn--borde btn--ancho" type="button" data-cq-pdf>Descargar cotización en PDF</button>
+              <p class="paso-pista" style="text-align:center">Los precios base se editan desde el panel de administración.</p>
+            </fieldset>
+          </form>
+
+          <!-- Columna plano dinámico -->
+          <aside class="cotizador-plano" aria-label="Plano esquemático dinámico">
+            <div class="plano-vivo">
+              <span class="plano-vivo__vineta">Plano esquemático en vivo</span>
+              <svg class="plano-vivo__svg" viewBox="0 0 420 300" role="img" aria-label="Vista de tu proyecto">
+                <defs>
+                  <pattern id="reticula2" width="14" height="14" patternUnits="userSpaceOnUse">
+                    <path d="M14 0H0v14" fill="none" stroke="#cfe0ff" stroke-width=".5" stroke-opacity=".3"/>
+                  </pattern>
+                </defs>
+                <rect x="0" y="0" width="420" height="300" fill="url(#reticula2)"/>
+                <rect class="linea-plano" x="20" y="20" width="380" height="260" rx="8" fill="none" stroke="#dfe8ff" stroke-width="14" stroke-opacity=".55"/>
+                <g data-plano-vivo-ventana class="plano-vivo__ventana">
+                  <rect class="alma-plano" data-plano-grupo="marco" x="150" y="100" width="120" height="100" rx="3" fill="#fff" stroke="#2b5bd7" stroke-width="8"/>
+                  <path data-plano-grupo="cruces" d="M210 100v100M150 150h120" stroke="#2b5bd7" stroke-width="4" opacity=".8"/>
+                </g>
+                <g class="plano-vivo__cota-h">
+                  <line x1="150" y1="252" x2="270" y2="252" stroke="#2b5bd7" stroke-width="2"/>
+                  <polygon points="150,252 161,246 161,258" fill="#2b5bd7"/>
+                  <polygon points="270,252 259,246 259,258" fill="#2b5bd7"/>
+                  <text x="210" y="274" text-anchor="middle" fill="#1e2b5c" font-size="12" font-weight="700" font-family="var(--mono)"><tspan data-plano-cota-ancho>1,50</tspan> m</text>
+                </g>
+                <g class="plano-vivo__cota-v">
+                  <line x1="308" y1="100" x2="308" y2="200" stroke="#2b5bd7" stroke-width="2"/>
+                  <polygon points="308,100 302,111 314,111" fill="#2b5bd7"/>
+                  <polygon points="308,200 302,189 314,189" fill="#2b5bd7"/>
+                  <text x="340" y="156" transform="rotate(90 340 156)" fill="#1e2b5c" font-size="12" font-weight="700" font-family="var(--mono)"><tspan data-plano-cota-alto>1,50</tspan> m</text>
+                </g>
+              </svg>
+              <div class="plano-vivo__datos">
+                <span>Área: <b data-plano-area>2,25 m²</b></span>
+                <span>Cantidad: <b data-plano-cantidad>1</b></span>
+              </div>
+            </div>
+            <p class="cotizador-plano__nota">Acabados y cristales modifican el costo final. Todo es editable desde el panel: la plancha de precios está en “Configuración del sitio”.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="espacio-seccion">
+      <div class="contenedor contenedor--angosto">
+        <div class="seccion-titulo reveal">
+          <h2>Preguntas <em>frecuentes</em></h2>
+        </div>
+        <div class="faq">
+          <details class="faq-item reveal">
+            <summary>¿Cuánto tarda la fabricación?</summary>
+            <p>Desde que confirmamos medidas y acabados, una ventana estándar se fabrica e instala en 2 a 3 semanas, dependiendo del volumen y del cristal elegido.</p>
+          </details>
+          <details class="faq-item reveal">
+            <summary>¿El precio del cotizador es el final?</summary>
+            <p>El cotizador calcula un total estimado con las medidas y opciones que elegís, usando los valores de la plancha de precios. El valor exacto lo confirmamos al coordinar la visita de medición y queda fijado antes de la orden de fabricación.</p>
+          </details>
+          <details class="faq-item reveal">
+            <summary>¿Hacen instalación a domicilio?</summary>
+            <p>Sí, instalación profesional incluida en la cotización. Cubrimos obra, vivienda y proyectos comerciales con control de calidad en cada etapa.</p>
+          </details>
+          <details class="faq-item reveal">
+            <summary>¿Qué cristales recomiendan para el calor?</summary>
+            <p>Para climas cálidos recomendamos DúoVent 6+12+6 (doble cámara) o Filtrasol 6 mm, que reducen la ganancia térmica y el ruido.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA final ============ -->
     <section class="cta-fuerte espacio-seccion">
       <div class="contenedor cta-fuerte__rejilla">
         <div class="reveal">
@@ -201,8 +442,9 @@
     </div>
   </footer>
 
-  <script src="js/datos.js?v=3"></script>
-  <script src="js/sitio.js?v=3"></script>
+  <script src="js/datos.js?v=4"></script>
+  <script src="js/sitio.js?v=4"></script>
+  <script src="js/cotizador.js?v=4"></script>
   <script>
     document.getElementById('anio').textContent = new Date().getFullYear();
   </script>

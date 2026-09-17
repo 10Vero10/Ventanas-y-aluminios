@@ -53,7 +53,32 @@
     "fondo": null
   },
   "config": {
-    "cotizar": true
+    "cotizar": true,
+    "cotizador": {
+      "moneda": "$",
+      "base": {
+        "ventanas": 280000,
+        "puertas": 430000,
+        "portones": 560000,
+        "divisiones": 310000,
+        "baranda": 390000
+      },
+      "acabados": {
+        "mate_negro": { "etiqueta": "Mate Negro", "factor": 1 },
+        "blanco": { "etiqueta": "Blanco Esmaltado", "factor": 1 },
+        "anodizado": { "etiqueta": "Anodizado Natural", "factor": 1.05 },
+        "chocolate": { "etiqueta": "Chocolate", "factor": 1.08 },
+        "madera": { "etiqueta": "Madera Roble", "factor": 1.2 }
+      },
+      "cristales": {
+        "claro": { "etiqueta": "Claro Templable 6 mm", "costo": 0 },
+        "filtrasol": { "etiqueta": "Filtrasol 6 mm", "costo": 18500 },
+        "duovent": { "etiqueta": "DúoVent 6+12+6", "costo": 42000 },
+        "templado": { "etiqueta": "Templado 9.5 mm", "costo": 35500 }
+      },
+      "instalacion": 89000,
+      "mosquitero": 46000
+    }
   },
   "meta": {
     "version": 1,

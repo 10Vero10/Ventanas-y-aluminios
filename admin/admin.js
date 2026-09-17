@@ -73,7 +73,18 @@
       miga: 'Configuración',
       descripcion: 'Opciones generales del sitio. Se publican junto con las imágenes presionando "Publicar cambios".',
       items: [
-        { clave: 'config.cotizar', etiqueta: 'Botón "Cotizar"', tipo: 'interruptor', nota: 'Muestra u oculta el botón y el enlace "Cotizar" de todas las páginas. Ocultando se evita dirigir a cotización por WhatsApp.' }
+        { clave: 'config.cotizar', etiqueta: 'Botón "Cotizar"', tipo: 'interruptor', nota: 'Muestra u oculta el botón y el enlace "Cotizar" de todas las páginas. Ocultando se evita dirigir a cotización por WhatsApp.' },
+        { clave: 'config.cotizador.base.ventanas', etiqueta: 'Precio base · Ventanas ($/m²)', tipo: 'numero', nota: 'Base por m² para ventanas en el cotizador. Escribe solo números (ej: 280000).' },
+        { clave: 'config.cotizador.base.puertas', etiqueta: 'Precio base · Puertas ($/m²)', tipo: 'numero', nota: 'Base por m² para puertas en el cotizador. Solo números.' },
+        { clave: 'config.cotizador.base.portones', etiqueta: 'Precio base · Portones ($/m²)', tipo: 'numero', nota: 'Base por m² para portones en el cotizador. Solo números.' },
+        { clave: 'config.cotizador.base.divisiones', etiqueta: 'Precio base · Divisiones ($/m²)', tipo: 'numero', nota: 'Base por m² para divisiones en el cotizador. Solo números.' },
+        { clave: 'config.cotizador.base.baranda', etiqueta: 'Precio base · Barandas ($/m lineal)', tipo: 'numero', nota: 'Base por metro lineal para barandas. Solo números.' },
+        { clave: 'config.cotizador.acabados.madera.factor', etiqueta: 'Acabado · Madera Roble (factor)', tipo: 'numero', nota: 'Multiplicador (ej: 1.2) para el acabado madera. Solo números y punto decimal.' },
+        { clave: 'config.cotizador.cristales.filtrasol.costo', etiqueta: 'Cristal · Filtrasol 6mm ($/m²)', tipo: 'numero', nota: 'Recargo por m². Solo números.' },
+        { clave: 'config.cotizador.cristales.duovent.costo', etiqueta: 'Cristal · DúoVent 6+12+6 ($/m²)', tipo: 'numero', nota: 'Recargo por m². Solo números.' },
+        { clave: 'config.cotizador.cristales.templado.costo', etiqueta: 'Cristal · Templado 9.5mm ($/m²)', tipo: 'numero', nota: 'Recargo por m². Solo números.' },
+        { clave: 'config.cotizador.instalacion', etiqueta: 'Instalación completa ($)', tipo: 'numero', nota: 'Costo fijo de instalación. Solo números.' },
+        { clave: 'config.cotizador.mosquitero', etiqueta: 'Mosquitero ($)', tipo: 'numero', nota: 'Costo del mosquitero. Solo números.' }
       ]
     }
   ];
@@ -141,10 +152,15 @@
     var e = {};
     SECCIONES.forEach(function (sec) {
       sec.items.forEach(function (item) {
-        if (item.tipo === 'interruptor') {
-          posicionar(e, item.clave, VYA.valor(datos, item.clave) !== false);
-          return;
-        }
+    if (item.tipo === 'interruptor') {
+        posicionar(e, item.clave, VYA.valor(datos, item.clave) !== false);
+        return;
+      }
+      if (item.tipo === 'numero') {
+        var n = Number(VYA.valor(datos, item.clave));
+        posicionar(e, item.clave, isNaN(n) ? 0 : n);
+        return;
+      }
         var valor = VYA.valor(datos, item.clave);
         var slots;
         if (item.tipo === 'galeria') {
@@ -170,6 +186,10 @@
       sec.items.forEach(function (item) {
         if (item.tipo === 'interruptor') {
           posicionar(out, item.clave, obtener(estado, item.clave) !== false);
+          return;
+        }
+        if (item.tipo === 'numero') {
+          posicionar(out, item.clave, Number(obtener(estado, item.clave)) || 0);
           return;
         }
         var slots = obtener(estado, item.clave);
@@ -449,6 +469,7 @@
 
   function construirArticulo(item, seccionId) {
     if (item.tipo === 'interruptor') return construirInterruptor(item);
+    if (item.tipo === 'numero') return construirNumero(item);
 
     var art = document.createElement('article');
     art.className = 'articulo';
@@ -564,6 +585,91 @@
     cont.appendChild(fila);
     cuerpo.appendChild(cont);
     art.appendChild(cuerpo);
+    return art;
+  }
+
+  function construirNumero(item) {
+    var art = document.createElement('article');
+    art.className = 'articulo';
+    art.dataset.clave = item.clave;
+
+    /* Cabecera */
+    var cab = document.createElement('div');
+    cab.className = 'articulo-cabecera';
+    var cabTxt = document.createElement('div');
+    var h2 = document.createElement('h2');
+    h2.textContent = item.etiqueta;
+    var nota = document.createElement('p');
+    nota.textContent = item.nota || '';
+    cabTxt.appendChild(h2);
+    cabTxt.appendChild(nota);
+
+    var chip = document.createElement('span');
+    chip.className = 'articulo-chip';
+    chip.textContent = 'Número';
+    cab.appendChild(cabTxt);
+    cab.appendChild(chip);
+    art.appendChild(cab);
+
+    /* Cuerpo */
+    var cuerpo = document.createElement('div');
+    cuerpo.className = 'articulo-cuerpo';
+
+    var fila = document.createElement('div');
+    fila.className = 'interruptor-fila';
+
+    var control = document.createElement('div');
+    control.className = 'campo-numero';
+
+    var entrada = document.createElement('input');
+    entrada.type = 'number';
+    entrada.min = '0';
+    entrada.step = 'any';
+    entrada.className = 'campo-numero__entrada';
+    var valorActual = obtener(estado, item.clave);
+    entrada.value = (valorActual === undefined || valorActual === null) ? '' : String(valorActual);
+    control.appendChild(entrada);
+
+    var accion = document.createElement('button');
+    accion.className = 'btn btn--borde btn-mini';
+    accion.type = 'button';
+    accion.textContent = 'Guardar';
+    accion.addEventListener('click', function () {
+      aplicar();
+    });
+
+    fila.appendChild(control);
+    fila.appendChild(accion);
+
+    var desc = document.createElement('p');
+    desc.className = 'campo-numero__ayuda';
+    desc.textContent = 'Escribe solo números (ej: 280000). Se actualiza en "Configuración del sitio" al publicar.';
+
+    cuerpo.appendChild(fila);
+    cuerpo.appendChild(desc);
+    art.appendChild(cuerpo);
+
+    function aplicar() {
+      var n = Number(entrada.value);
+      if (!isFinite(n) || n < 0) {
+        toast('Escribe un número válido mayor o igual a 0.', 'error');
+        entrada.focus();
+        return;
+      }
+      registrarHistorial();
+      posicionar(estado, item.clave, n);
+      actualizarEstadoPublicacion();
+      renderearSeccion(seccionActual);
+      toast(item.etiqueta + ' actualizado a ' + n.toLocaleString('es-CO'));
+    }
+
+    entrada.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        aplicar();
+      }
+    });
+
     return art;
   }
 
