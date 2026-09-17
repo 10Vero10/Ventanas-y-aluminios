@@ -53,7 +53,7 @@
     "fondo": null
   },
   "config": {
-    "cotizar": false
+    "cotizar": true
   },
   "meta": {
     "version": 1,
